@@ -4,8 +4,24 @@ Router.configure
   waitOn: -> Meteor.subscribe 'posts'
 
 Router.map ->
-  this.route 'postsList', path: '/'
+  @.route 'postsList', path: '/'
   
-  this.route 'postPage',
+  @.route 'postPage',
     path: '/posts/:_id'
+    data: -> Posts.findOne @.params._id
+    
+  @.route 'postEdit',
+    path: '/posts/:_id/edit'
     data: -> Posts.findOne this.params._id
+    
+  @.route 'postSubmit', path: '/submit'
+
+requireLogin = ->
+  if ! Meteor.user()
+    if Meteor.loggingIn()
+      @.render @.loadingTemplate
+    else
+      @.render 'accessDenied'
+    @.stop()
+
+Router.before requireLogin, only: 'postSubmit'
