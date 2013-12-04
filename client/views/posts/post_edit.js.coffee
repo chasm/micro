@@ -1,3 +1,6 @@
+Template.postEdit.helpers
+  post: -> Posts.findOne Session.get( 'currentPostId' )
+
 Template.postEdit.events
   'submit form': (e) ->
     e.preventDefault()
